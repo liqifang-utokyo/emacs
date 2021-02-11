@@ -1,271 +1,98 @@
 ;;; package --- Summary
+
 ;;; Commentary:
+
 ;;; Code:
+
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(require 'package)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  (when no-ssl (warn "\
+Your version of Emacs does not support SSL connections,
+which is unsafe because it allows man-in-the-middle attacks.
+There are two things you can do about this warning:
+1. Install an Emacs version that does support SSL and be safe.
+2. Remove this warning from your init file so you won't see it again."))
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://stable.melpa.org/packages/")) t)
+  ;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
+  ;; and `package-pinned-packages`. Most users will not need or want to do this.
+  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+  )
+(package-initialize)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
- '(compilation-message-face (quote default))
- '(cua-global-mark-cursor-color "#2aa198")
- '(cua-normal-cursor-color "#657b83")
- '(cua-overwrite-cursor-color "#b58900")
- '(cua-read-only-cursor-color "#859900")
- '(custom-enabled-themes (quote (solarized)))
+ '(custom-enabled-themes (quote (dracula)))
  '(custom-safe-themes
    (quote
-    ("0598c6a29e13e7112cfbc2f523e31927ab7dce56ebb2016b567e1eff6dc1fd4f" "d91ef4e714f05fff2070da7ca452980999f5361209e679ee988e3c432df24347" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" default)))
- '(elpy-modules
-   (quote
-    (elpy-module-company elpy-module-eldoc elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
- '(fci-rule-color "#eee8d5")
- '(find-file-hook
-   (quote
-    (global-flycheck-mode-check-buffers yas-global-mode-check-buffers global-auto-complete-mode-check-buffers global-visual-line-mode-check-buffers url-handlers-set-buffer-mode global-linum-mode-check-buffers global-eldoc-mode-check-buffers global-font-lock-mode-check-buffers epa-file-find-file-hook vc-refresh-state)))
- '(flymake-google-cpplint-command "/Applications/anaconda3/bin/cpplint")
- '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
- '(highlight-symbol-colors
-   (--map
-    (solarized-color-blend it "#fdf6e3" 0.25)
-    (quote
-     ("#b58900" "#2aa198" "#dc322f" "#6c71c4" "#859900" "#cb4b16" "#268bd2"))))
- '(highlight-symbol-foreground-color "#586e75")
- '(highlight-tail-colors
-   (quote
-    (("#eee8d5" . 0)
-     ("#B4C342" . 20)
-     ("#69CABF" . 30)
-     ("#69B7F0" . 50)
-     ("#DEB542" . 60)
-     ("#F2804F" . 70)
-     ("#F771AC" . 85)
-     ("#eee8d5" . 100))))
- '(hl-bg-colors
-   (quote
-    ("#DEB542" "#F2804F" "#FF6E64" "#F771AC" "#9EA0E5" "#69B7F0" "#69CABF" "#B4C342")))
- '(hl-fg-colors
-   (quote
-    ("#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3")))
- '(hl-paren-colors (quote ("#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900")))
- '(hl-sexp-background-color "#1c1f26")
- '(nrepl-message-colors
-   (quote
-    ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
+    ("55c2069e99ea18e4751bd5331b245a2752a808e91e09ccec16eb25dadbe06354" default)))
+ '(inhibit-startup-screen t)
  '(org-format-latex-options
    (quote
     (:foreground default :background default :scale 2.0 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
 		 ("begin" "$1" "$" "$$" "\\(" "\\["))))
- '(org-mode-hook
+ '(org-latex-classes
    (quote
-    (#[0 "\300\301\302\303\304$\207"
-	 [add-hook change-major-mode-hook org-show-block-all append local]
-	 5]
-     #[0 "\300\301\302\303\304$\207"
-	 [add-hook change-major-mode-hook org-babel-show-result-all append local]
-	 5]
-     org-babel-result-hide-spec org-babel-hide-all-hashes turn-on-org-cdlatex toggle-truncate-lines turn-on-font-lock)))
+    (("article" "\\documentclass[11pt]{article}"
+      ("\\section{%s}" . "\\section*{%s}")
+      ("\\subsection{%s}" . "\\subsection*{%s}")
+      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+      ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+     ("report" "\\documentclass[11pt]{report}"
+      ("\\chapter{%s}" . "\\chapter*{%s}")
+      ("\\section{%s}" . "\\section*{%s}")
+      ("\\subsection{%s}" . "\\subsection*{%s}")
+      ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+     ("book" "\\documentclass[11pt]{book}"
+      ("\\part{%s}" . "\\part*{%s}")
+      ("\\chapter{%s}" . "\\chapter*{%s}")
+      ("\\section{%s}" . "\\section*{%s}")
+      ("\\subsection{%s}" . "\\subsection*{%s}")
+      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))))
  '(org-startup-truncated nil)
  '(package-selected-packages
    (quote
-    (yasnippet-snippets dracula-theme pylint org-ref smex org-bullets flymake-cursor flymake-google-cpplint iedit irony auto-complete-clang rtags cmake-ide solarized-theme flycheck py-autopep8 elpy better-defaults python auto-correct exec-path-from-shell yasnippet math-symbol-lists auctex)))
- '(pos-tip-background-color "#eee8d5")
- '(pos-tip-foreground-color "#586e75")
- '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
- '(term-default-bg-color "#fdf6e3")
- '(term-default-fg-color "#657b83")
- '(vc-annotate-background nil)
- '(vc-annotate-background-mode nil)
- '(vc-annotate-color-map
-   (quote
-    ((20 . "#dc322f")
-     (40 . "#c9485ddd1797")
-     (60 . "#bf7e73b30bcb")
-     (80 . "#b58900")
-     (100 . "#a5a58ee30000")
-     (120 . "#9d9d91910000")
-     (140 . "#9595943e0000")
-     (160 . "#8d8d96eb0000")
-     (180 . "#859900")
-     (200 . "#67119c4632dd")
-     (220 . "#57d79d9d4c4c")
-     (240 . "#489d9ef365ba")
-     (260 . "#3963a04a7f29")
-     (280 . "#2aa198")
-     (300 . "#288e98cbafe2")
-     (320 . "#27c19460bb87")
-     (340 . "#26f38ff5c72c")
-     (360 . "#268bd2"))))
- '(vc-annotate-very-old-color nil)
- '(weechat-color-list
-   (quote
-    (unspecified "#fdf6e3" "#eee8d5" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#657b83" "#839496")))
- '(xterm-color-names
-   ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#073642"])
- '(xterm-color-names-bright
-   ["#fdf6e3" "#cb4b16" "#93a1a1" "#839496" "#657b83" "#6c71c4" "#586e75" "#002b36"]))
+    (auctex cdlatex csv-mode gnu-elpa-keyring-update yasnippet-snippets smex flycheck dracula-theme cuda-mode auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
-(setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin/"))
-(setq exec-path (append exec-path '("/Library/TeX/texbin/")))
-(defun fullscreen ()
-      (interactive)
-      (set-frame-parameter nil 'fullscreen
-                           (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
+ '(default ((t (:family "Ubuntu Mono" :foundry "DAMA" :slant normal :weight normal :height 162 :width normal)))))
+
 (global-linum-mode 1) ; always show line numbers
-(setq linum-format "%d| ")  ;set format
-(setq-default TeX-engine 'xetex) ; set XeLaTeX as default compiler
-(setq-default TeX-PDF-mode t) ; a PDF output by default
 
-(setq TeX-parse-self t) ; Enable parse on load.
-(setq TeX-auto-save t) ; Enable parse on save.
-(setq LaTeX-always-use-Biber t) ; always use Biber
-
-(require 'package)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (proto (if no-ssl "http" "https")))
-  (when no-ssl
-    (warn "\
-Your version of Emacs does not support SSL connections,
-which is unsafe because it allows man-in-the-middle attacks.
-There are two things you can do about this warning:
-1. Install an Emacs version that does support SSL and be safe.
-2. Remove this warning from your init file so you won't see it again."))
-  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-  (when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")))))
-(package-initialize)
-
-(when (not package-archive-contents)
-  (package-refresh-contents))
-
-(defvar myPackages
-  '(better-defaults
-    ein
-    elpy
-    flycheck
-    solarized-theme
-    py-autopep8))
-
-(mapc #'(lambda (package)
-    (unless (package-installed-p package)
-      (package-install package)))
-      myPackages)
-
-;; BASIC CUSTOMIZATION
-;; --------------------------------------
-
-(setq inhibit-startup-message t) ;; hide the startup message
-(add-to-list 'custom-theme-load-path "~/.emacs.d/theme")
-(load-theme 'dracula t) ;; load solarized theme
-(global-linum-mode t) ;; enable line numbers globally
-
-;; PYTHON CONFIGURATION
-;; --------------------------------------
-
-(elpy-enable)
-;; (elpy-use-ipython)
-(setq python-shell-interpreter "ipython"
-      python-shell-interpreter-args "-i --simple-prompt")
-;; use flycheck not flymake with elpy
-(when (require 'flycheck nil t)
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook 'flycheck-mode)
-  (flycheck-add-next-checker 'python-pycompile '(warning . python-pylint))
-  (setq-default flycheck-disabled-checkers '(python-flake8)))
-
-;; enable autopep8 formatting on save
-(require 'py-autopep8)
-(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
-
-;; The following lines are always needed. Choose your own keys.
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-(add-hook 'org-mode-hook 'turn-on-font-lock) ; not needed when global-font-lock-mode is on
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-iswitchb)
-
-(setq truncate-lines t)
-(add-hook 'org-mode-hook (lambda () (setq toggle-truncate-lines t)))
-(add-hook 'org-mode-hook 'turn-on-org-cdlatex)
-
-(global-visual-line-mode 1) ; 1 for on, 0 for off.
-
-(when (member "Menlo" (font-family-list)) (set-frame-font "Menlo-20" t t))
-
-;; Auto-update
-(require 'package)
-(setq package-archives
-      '(("melpa" . "https://melpa.org/packages/")
-        ("gnu" . "https://elpa.gnu.org/packages/")
-        ("org" . "http://orgmode.org/elpa/")))
-(package-initialize)
-
-(set-frame-parameter nil 'fullscreen 'fullboth)
-
-;;(require 'rtags) ;; optional, must have rtags installed
-;;(cmake-ide-setup)
-
-(require 'auto-complete)
-(require 'auto-complete-config)
-(ac-config-default)
-
-(require 'yasnippet)
-(yas-global-mode 1)
-
-(define-key global-map (kbd "C-c ;") 'iedit-mode) ; fix the bug of iedit in mac
-(put 'erase-buffer 'disabled nil)
-
-(require 'org-bullets)
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-
-;;(define-org-mode-map "\M-q" 'toggle-truncate-lines)
-
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "|" "DONE(d)")
-	(sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
-	(sequence "|" "CANCELED(c)")))
-
-(setq org-log-done 'note) ; Time stamp
-
-(require 'smex) ; Not needed if you use package.el
-  (smex-initialize) ; Can be omitted. This might cause a (minimal) delay
-                    ; when Smex is auto-initialized on its first run.
-
-(global-set-key (kbd "M-x") 'smex)
-  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-  ;; This is your old M-x.
-  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
-
-;; Set default app to open file
-(add-hook 'org-mode-hook
-      '(lambda ()
-             (setq org-file-apps
-                   (append '(
-                             ("\\.png\\'" . default)
-                             ) org-file-apps ))))
-
-(exec-path-from-shell-initialize)
-
-(setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
-                              "xelatex -interaction nonstopmode %f")) ;; Export .org file PDF in Chinese
-
-					;(put 'upcase-region 'disabled nil)
+(global-visual-line-mode t) ; wrap line
 
 (global-flycheck-mode)
-(add-hook 'c++-mode-hook (lambda () (setq flycheck-clang-language-standard "c++11")))
+
+(global-auto-complete-mode t)
+
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+;; This is your old M-x.
+(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+
+(yas-global-mode 1)
+
+;; Enable csv-mode
+(add-to-list 'auto-mode-alist '("\\.[Cc][Ss][Vv]\\'" . csv-mode))
+(autoload 'csv-mode "csv-mode"
+  "Major mode for editing comma-separated value files." t)
+
+;; Turn CDLaTeX on
+(add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+
+(setq org-latex-create-formula-image-program 'dvipng)
 
 ;;; .emacs ends here
-(put 'downcase-region 'disabled nil)
